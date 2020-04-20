@@ -15,7 +15,9 @@ class ProductosController extends Controller
     public function index()
     {
         //
-        return view('productos.index');
+        $datos['productos']=Productos::paginate(5);
+
+        return view('productos.index',$datos);
     }
 
     /**
@@ -95,8 +97,11 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Productos $productos)
+    public function destroy($idProducto)//recibimos el id a eliminar
     {
-        //
+    
+       $producto = Productos::where('idProducto',$idProducto);//buscamos el registro con el id indicado y lo guardamos en la variable
+       $producto->delete();//eliminamos el registro guardado en la variable
+       return redirect('productos');//regresamos a la vista de productos(index)
     }
 }

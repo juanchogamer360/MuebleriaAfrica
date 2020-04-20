@@ -15,7 +15,10 @@ class EmpleadosController extends Controller
     public function index()
     {
         //
-        return view('empleados.index');
+
+        $datos['empleados']=Empleados::paginate(5);
+
+        return view('empleados.index',$datos);
 
     }
 
@@ -94,8 +97,10 @@ class EmpleadosController extends Controller
      * @param  \App\Empleados  $empleados
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Empleados $empleados)
+    public function destroy($id)//recibimos solamente el id del registro a eliminar
     {
         //
+       Empleados::destroy($id);//eliminamos el registro con el id indicado
+       return redirect('empleados');//regresamos a la vista index de empleados
     }
 }
