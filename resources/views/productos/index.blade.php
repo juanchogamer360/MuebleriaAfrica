@@ -31,7 +31,11 @@ inicio (despliegue de productos)
             <td>{{$producto->material}}</td>
             <td>{{$producto->modelo}}</td>
             <td>{{$producto->foto}}</td>
-            <td>Editar | 
+            <td>
+            <a href="{{ url ('/productos/'.$producto->idProducto.'/edit') }}">
+              Editar
+            </a>    
+            | 
                 <form method="post" action="{{url('/productos/'.$producto->idProducto)}}"> <!--mandando el id del registro a eliminar en la url-->
                 {{csrf_field()}} <!--esta linea genera un token-->
                 {{method_field('DELETE')}} <!--manda llamar el controlador destroy enviando como parametro el id con la url-->

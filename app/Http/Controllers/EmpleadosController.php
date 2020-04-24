@@ -72,10 +72,12 @@ class EmpleadosController extends Controller
      * @param  \App\Empleados  $empleados
      * @return \Illuminate\Http\Response
      */
-    public function edit(Empleados $empleados)
+    public function edit($id)//recibimos el id a editar
     {
         //
-        return view('empleados.edit');
+        $empleado= Empleados::findOrFail($id);//hacemos la busqueda del id en la base de datos y guardamos el registro en la variable
+
+        return view('empleados.edit',compact('empleado'));//regresamos la vista de empleados.edit y enviamos la variable con el registro 
 
     }
 
@@ -86,9 +88,17 @@ class EmpleadosController extends Controller
      * @param  \App\Empleados  $empleados
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Empleados $empleados)
+    public function update(Request $request, $id)
     {
         //
+        $datosEmpleado=request()->except('_token','_method');
+        Empleados::where('id','=',$id)->update($datosEmpleado);
+
+        $empleado= Empleados::findOrFail($id);//hacemos la busqueda del id en la base de datos y guardamos el registro en la variable
+
+        return view('empleados.edit',compact('empleado'));//regresamos la vista de empleados.edit y enviamos la variable con el registro 
+
+
     }
 
     /**

@@ -24,7 +24,12 @@ inicio (despliegue de empleados)
             <td>{{$empleado->contaseña}}</td>
             <td>{{$empleado->sueldo}}</td>
             <td>{{$empleado->puesto}}</td>
-            <td>Editar | 
+            <td>
+                
+            <a href="{{ url ('/empleados/'.$empleado->id.'/edit') }}">
+              Editar
+            </a>
+            | 
                 <form method="post" action="{{url('/empleados/'.$empleado->id)}}"> <!--mandando el id del registro a eliminar en la url-->
                 {{csrf_field()}} <!--esta linea genera un token-->
                 {{method_field('DELETE')}} <!--manda llamar el controlador destroy enviando como parametro el id con la url-->

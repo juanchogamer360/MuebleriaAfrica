@@ -73,10 +73,13 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function edit(Productos $productos)
+    public function edit($idProducto)//recibimos el id a editar
     {
         //
-        return view('productos.edit');
+        $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
+       // $producto = Productos::where('idProducto',$idProducto);
+
+        return view('productos.edit',compact('producto'));//retorna la vista de productos.edit + el registro encontrado
     }
 
     /**
@@ -86,9 +89,16 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Productos $productos)
+    public function update(Request $request, $idProducto)
     {
         //
+        $datosProducto=request()->except('_token','_method');
+        Productos::where('idProducto','=',$idProducto)->update($datosProducto);
+
+        $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
+        // $producto = Productos::where('idProducto',$idProducto);
+ 
+         return view('productos.edit',compact('producto'));//retorna la vista de productos.edit + el registro encontrado
     }
 
     /**
