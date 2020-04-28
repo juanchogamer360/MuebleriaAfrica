@@ -20,3 +20,5 @@ Route::get('/', function () {
 Route::resource('empleados', 'EmpleadosController');
 
 Route::resource('productos', 'ProductosController');
+
+Route::view('login', 'login')->name('inicio-sesion');
