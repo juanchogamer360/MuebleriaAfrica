@@ -30,7 +30,10 @@ inicio (despliegue de productos)
             <td>{{$producto->descripcion}}</td>
             <td>{{$producto->material}}</td>
             <td>{{$producto->modelo}}</td>
-            <td>{{$producto->foto}}</td>
+            <td>
+            <img src="{{asset ('storage').'/'.$producto->foto}}" alt="" width="200">
+            
+            </td>
             <td>
             <a href="{{ url ('/productos/'.$producto->idProducto.'/edit') }}">
               Editar

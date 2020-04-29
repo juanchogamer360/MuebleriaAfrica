@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Productos;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductosController extends Controller
 {
@@ -15,9 +16,9 @@ class ProductosController extends Controller
     public function index()
     {
         //
-        $datos['productos']=Productos::paginate(5);
+        $datos['productos']=Productos::paginate(5);//guardamos en la variable los productos de la BD paginados de 5 en 5
 
-        return view('productos.index',$datos);
+        return view('productos.index',$datos);//regresamos la vista index con todos los productos encontrados
     }
 
     /**
@@ -28,7 +29,7 @@ class ProductosController extends Controller
     public function create()
     {
         //
-        return view('productos.create');
+        return view('productos.create');//regresamos la vista para crear usuarios
     }
 
     /**
@@ -42,17 +43,17 @@ class ProductosController extends Controller
         //
         //$datosProducto=request()->all();
 
-        $datosProducto=request()->except('_token');
+        $datosProducto=request()->except('_token');//recibimos los datos del producto excepto el token
 
-        if($request->hasFile('foto')){
+        if($request->hasFile('foto')){//si en los datos del producto hay una foto...
              
 
-            $datosProducto['foto']=$request->file('foto')->store('uploads','public');
+            $datosProducto['foto']=$request->file('foto')->store('uploads','public');//guardamos la foto en la carpeta uploads
         }
 
-         Productos::insert($datosProducto);
+         Productos::insert($datosProducto);//insertamos todos los datos en la BD
 
-        return response()->json($datosProducto);
+        return response()->json($datosProducto);//mostramos en pantalla los datos que se ingresaron
     }
 
     /**
@@ -89,14 +90,23 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $idProducto)
+    public function update(Request $request, $idProducto)//esta funcion  se manda llamar con el metodo "PATCH"
     {
         //
-        $datosProducto=request()->except('_token','_method');
-        Productos::where('idProducto','=',$idProducto)->update($datosProducto);
+        $datosProducto=request()->except('_token','_method');//guardamos todos los datos del producto enviado por el id de la url excepto el token y el metodo
+
+        if($request->hasFile('foto')){
+             
+            $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
+
+            Storage::delete('public/'.$producto->foto);//eliminamos la foto antigua antes del update
+
+            $datosProducto['foto']=$request->file('foto')->store('uploads','public');//poner la nueva fotografia en la carpeta uploads
+        }
+
+        Productos::where('idProducto','=',$idProducto)->update($datosProducto);//actualizamos los datos dentro de la BD con los nuevos datos que el usuario cambio
 
         $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
-        // $producto = Productos::where('idProducto',$idProducto);
  
          return view('productos.edit',compact('producto'));//retorna la vista de productos.edit + el registro encontrado
     }

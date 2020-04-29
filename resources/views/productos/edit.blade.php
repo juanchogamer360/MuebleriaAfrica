@@ -37,7 +37,7 @@ seccion para editar productos
 
 <label for="foto">{{'Foto:'}}</label>
 <br>
-{{$producto->foto}}
+<img src="{{asset ('storage').'/'.$producto->foto}}" alt="" width="200">
 <br>
 <input type="file" name="foto" id="foto" value="">
 <br>
