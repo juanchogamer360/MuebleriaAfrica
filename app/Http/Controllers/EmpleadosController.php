@@ -16,7 +16,7 @@ class EmpleadosController extends Controller
     {
         //
 
-        $datos['empleados']=Empleados::paginate(5);
+        $datos['empleados']=Empleados::paginate(3);
 
         return view('empleados.index',$datos);
 
@@ -43,6 +43,17 @@ class EmpleadosController extends Controller
     public function store(Request $request)
     {
         //
+        $campos=[
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'contaseña' => 'required|string|max:100',
+            'sueldo' => 'required',           
+            'puesto' => 'required|string|max:100',
+        ];
+        $Mensaje=["required" => 'El :attribute es requerido'];
+
+        $this->validate($request,$campos,$Mensaje);
+        
 
         //$datosEmpelado=request()->all();
 
@@ -50,7 +61,9 @@ class EmpleadosController extends Controller
 
          Empleados::insert($datosEmpleado);
 
-        return response()->json($datosEmpleado);
+        //return response()->json($datosEmpleado);
+        return redirect('empleados')->with('Mensaje','Empleado agregado con exito');//regresamos a la vista index de empleados + un mensaje
+
     }
 
     /**
@@ -91,12 +104,26 @@ class EmpleadosController extends Controller
     public function update(Request $request, $id)
     {
         //
+
+        $campos=[
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'contaseña' => 'required|string|max:100',
+            'sueldo' => 'required',           
+            'puesto' => 'required|string|max:100',
+        ];
+        
+        $Mensaje=["required" => 'El :attribute es requerido'];
+
+        $this->validate($request,$campos,$Mensaje);
+
         $datosEmpleado=request()->except('_token','_method');
         Empleados::where('id','=',$id)->update($datosEmpleado);
 
-        $empleado= Empleados::findOrFail($id);//hacemos la busqueda del id en la base de datos y guardamos el registro en la variable
+       // $empleado= Empleados::findOrFail($id);//hacemos la busqueda del id en la base de datos y guardamos el registro en la variable
 
-        return view('empleados.edit',compact('empleado'));//regresamos la vista de empleados.edit y enviamos la variable con el registro 
+      //  return view('empleados.edit',compact('empleado'));//regresamos la vista de empleados.edit y enviamos la variable con el registro 
+      return redirect('empleados')->with('Mensaje','Empleado modificado con exito');//regresamos a la vista index de empleados
 
 
     }
@@ -111,6 +138,6 @@ class EmpleadosController extends Controller
     {
         //
        Empleados::destroy($id);//eliminamos el registro con el id indicado
-       return redirect('empleados');//regresamos a la vista index de empleados
+       return redirect('empleados')->with('Mensaje','Empleado eliminado');//regresamos a la vista index de empleados
     }
 }

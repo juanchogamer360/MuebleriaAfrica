@@ -1,29 +1,26 @@
-seccion para crear empleados
+@extends('layouts.app')
 
-<form action="{{url ('/empleados')}}" method="post" enctype="multipart/form-data">
+@section('content')
+
+<div class="container">
+<!--
+@if(count($errors)>0)
+<div class="alert alert-danger" role="alert">
+    <ul>
+        @foreach($errors-> all() as $error)
+        <li>{{$error}}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+-->
+<form action="{{url ('/empleados')}}" class="form-horizontal" method="post" enctype="multipart/form-data">
 {{csrf_field()}}
 
-<label for="nombre">{{'Nombre:'}}</label>
-<input type="text" name="nombre" id="nombre" value="">
-<br>
-
-<label for="apellido">{{'Apellidos:'}}</label>
-<input type="text" name="apellido" id="apellido" value="">
-<br>
-
-<label for="contaseña">{{'Contraseña:'}}</label>
-<input type="password" name="contaseña" id="contaseña" value="">
-<br>
-
-<label for="sueldo">{{'Sueldo:'}}</label>
-<input type="number" name="sueldo" id="sueldo" value="">
-<br>
-
-<label for="puesto">{{'Puesto:'}}</label>
-<input type="text" name="puesto" id="puesto" value="">
-<br>
-
-<input type="submit" value="Agregar">
+@include('empleados.form',['Modo'=> 'crear'])
 
 
 </form>
+
+</div>
+@endsection

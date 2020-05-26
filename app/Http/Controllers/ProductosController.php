@@ -41,6 +41,22 @@ class ProductosController extends Controller
     public function store(Request $request)
     {
         //
+
+        $campos=[
+            'nombre' => 'required|string|max:100',
+            'color' => 'required|string|max:100',
+            'cantidad' => 'required',
+            'precio' => 'required',
+            'categoria' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:100',
+            'material' => 'required|string|max:100',
+            'modelo' => 'required|string|max:100',
+            'foto' => 'required|max:10000|mimes:jpeg,png,jpg'
+        ];
+        $Mensaje=["required" => 'El :attribute es requerido'];
+
+        $this->validate($request,$campos,$Mensaje);
+
         //$datosProducto=request()->all();
 
         $datosProducto=request()->except('_token');//recibimos los datos del producto excepto el token
@@ -53,7 +69,8 @@ class ProductosController extends Controller
 
          Productos::insert($datosProducto);//insertamos todos los datos en la BD
 
-        return response()->json($datosProducto);//mostramos en pantalla los datos que se ingresaron
+        //return response()->json($datosProducto);//mostramos en pantalla los datos que se ingresaron
+        return redirect('productos')->with('Mensaje','Producto agregado');//regresamos a la vista de productos(index) + un mensaje
     }
 
     /**
@@ -93,6 +110,28 @@ class ProductosController extends Controller
     public function update(Request $request, $idProducto)//esta funcion  se manda llamar con el metodo "PATCH"
     {
         //
+
+        $campos=[
+            'nombre' => 'required|string|max:100',
+            'color' => 'required|string|max:100',
+            'cantidad' => 'required',
+            'precio' => 'required',
+            'categoria' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:100',
+            'material' => 'required|string|max:100',
+            'modelo' => 'required|string|max:100',
+        ];
+       
+
+        if($request->hasFile('foto'))
+        {
+           $campos += ['foto' => 'required|max:10000|mimes:jpeg,png,jpg'];
+        }
+        
+        $Mensaje=["required" => 'El :attribute es requerido'];
+
+        $this->validate($request,$campos,$Mensaje);
+
         $datosProducto=request()->except('_token','_method');//guardamos todos los datos del producto enviado por el id de la url excepto el token y el metodo
 
         if($request->hasFile('foto')){
@@ -106,9 +145,10 @@ class ProductosController extends Controller
 
         Productos::where('idProducto','=',$idProducto)->update($datosProducto);//actualizamos los datos dentro de la BD con los nuevos datos que el usuario cambio
 
-        $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
- 
-         return view('productos.edit',compact('producto'));//retorna la vista de productos.edit + el registro encontrado
+      //  $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
+      //return view('productos.edit',compact('producto'));//retorna la vista de productos.edit + el registro encontrado
+      return redirect('productos')->with('Mensaje','Producto modificado');//regresamos a la vista index de empleados + un mensaje
+
     }
 
     /**
@@ -119,9 +159,25 @@ class ProductosController extends Controller
      */
     public function destroy($idProducto)//recibimos el id a eliminar
     {
+
+        $producto = Productos::where('idProducto',$idProducto)->firstOrFail();//buscamos el registro con el id recibido en la url y lo guardamos en la variable
+
+        if(Storage::delete('public/'.$producto->foto));//eliminamos la foto antigua antes del update
+{
+    $producto = Productos::where('idProducto',$idProducto);//buscamos el registro con el id indicado y lo guardamos en la variable
+    $producto->delete();//eliminamos el registro guardado en la variable
+}
     
-       $producto = Productos::where('idProducto',$idProducto);//buscamos el registro con el id indicado y lo guardamos en la variable
-       $producto->delete();//eliminamos el registro guardado en la variable
-       return redirect('productos');//regresamos a la vista de productos(index)
+      
+       //return redirect('productos');//regresamos a la vista de productos(index)
+       return redirect('productos')->with('Mensaje','Producto eliminado');//regresamos a la vista index de empleados + un mensaje
+
     }
+
+
+/**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
 }

@@ -15,6 +15,10 @@ class VentaController extends Controller
     public function index()
     {
         //
+        
+        $datos['ventas']=Venta::paginate(10);
+
+        return view('ventas.index',$datos);
     }
 
     /**
